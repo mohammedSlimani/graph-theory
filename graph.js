@@ -5,7 +5,11 @@
 **/
 exports.UndirectedGraph = class UndirectedGraph {
   constructor () {
-    this.adjacencyList = {}
+    this._adjacencyList = {}
+  }
+
+  get adjacencyList () {
+    return this._adjacencyList
   }
 
   /**
@@ -13,8 +17,8 @@ exports.UndirectedGraph = class UndirectedGraph {
    * @param {number} vertex - the vertex to be added. Identified by a unique number
    */
   addVertex (vertex) {
-    if (this.adjacencyList[vertex]) return; // already exists
-    this.adjacencyList[vertex] = []
+    if (this._adjacencyList[vertex]) return; // already exists
+    this._adjacencyList[vertex] = []
   }
 
   /**
@@ -24,18 +28,18 @@ exports.UndirectedGraph = class UndirectedGraph {
    */
   addEdge (source, destination) {
     // make sure the vertices exist or add them
-    if (!this.adjacencyList[source]) this.addVertex(source)
-    if (!this.adjacencyList[destination]) this.addVertex(destination)
+    if (!this._adjacencyList[source]) this.addVertex(source)
+    if (!this._adjacencyList[destination]) this.addVertex(destination)
 
     // source is destination, we only need to push the vertex once.
     if( source === destination){
-      this.adjacencyList[source].push(destination)
+      this._adjacencyList[source].push(destination)
       return
     }
 
     // make the source and destination vertices neighbours
-    this.adjacencyList[source].push(destination)
-    this.adjacencyList[destination].push(source)
+    this._adjacencyList[source].push(destination)
+    this._adjacencyList[destination].push(source)
   }
 
   /**
@@ -44,8 +48,8 @@ exports.UndirectedGraph = class UndirectedGraph {
    * @param destination
    */
   removeEdge (source, destination) {
-    this.adjacencyList[source] = this.adjacencyList[source].filter(v => v !== destination)
-    this.adjacencyList[destination] = this.adjacencyList[destination].filter(v => v !== source)
+    this._adjacencyList[source] = this._adjacencyList[source].filter(v => v !== destination)
+    this._adjacencyList[destination] = this._adjacencyList[destination].filter(v => v !== source)
   }
 
   /**
@@ -54,12 +58,12 @@ exports.UndirectedGraph = class UndirectedGraph {
    */
   removeVertex (vertex) {
     // remove the vertex from all the neighbours adjacency list
-    while (this.adjacencyList[vertex].length) {
-      const neighbour = this.adjacencyList[vertex].pop()
+    while (this._adjacencyList[vertex].length) {
+      const neighbour = this._adjacencyList[vertex].pop()
       this.removeEdge(vertex, neighbour)
     }
     // Remove the vertex
-    delete this.adjacencyList[vertex]
+    delete this._adjacencyList[vertex]
   }
 
 }
