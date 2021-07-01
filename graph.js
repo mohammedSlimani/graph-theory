@@ -27,6 +27,12 @@ exports.UndirectedGraph = class UndirectedGraph {
     if (!this.adjacencyList[source]) this.addVertex(source)
     if (!this.adjacencyList[destination]) this.addVertex(destination)
 
+    // source is destination, we only need to push the vertex once.
+    if( source === destination){
+      this.adjacencyList[source].push(destination)
+      return
+    }
+
     // make the source and destination vertices neighbours
     this.adjacencyList[source].push(destination)
     this.adjacencyList[destination].push(source)
