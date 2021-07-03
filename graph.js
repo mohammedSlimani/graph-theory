@@ -115,7 +115,7 @@ exports.WeightedUndirectedGraph = class WeightedUndirectedGraph {
    *
    * @param {string}source
    * @param {(Edge | [Edge])}destinations
-   * @param {boolean} directed - the flash to decide whether the graph is direct or not
+   * @param {boolean} [directed] - the flag to decide whether the graph is direct or not
    */
   addEdges(source, destinations, directed = false) {
     destinations = Array.isArray(destinations)? destinations : [destinations]
@@ -129,6 +129,26 @@ exports.WeightedUndirectedGraph = class WeightedUndirectedGraph {
       if (!directed) {
         this._adjacencyMatrix[this._vertexHash[destination.destination]][this._vertexHash[source]] = destination.weight
       }
+    }
+  }
+
+  /**
+   * Removes an edge between a source and a destination
+   * @param {string} source - the name of the source
+   * @param {string} destination - the name of the destination
+   * @param {boolean} [directed] - the flag to decide whether the graph is direct or not
+   */
+  removeEdge(source, destination, directed = false) {
+    // if the edges dont exist, dont do anything, We might want to throw an error just to make the code strict
+    if (isNaN(this._vertexHash[source]))
+      throw new Error(`Can't remove edge, because ${source} doesn't exist`)
+
+    if (isNaN(this._vertexHash[destination]))
+      throw new Error(`Can't remove edge, because ${destination} doesn't exist`)
+
+    this._adjacencyMatrix[this._vertexHash[source]][this._vertexHash[destination]] = 0
+    if (!directed) {
+      this._adjacencyMatrix[this._vertexHash[destination]][this._vertexHash[source]] = 0
     }
   }
 }

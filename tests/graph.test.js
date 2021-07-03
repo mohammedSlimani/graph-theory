@@ -112,5 +112,24 @@ describe('Graph tests', () => {
             assertMatrixDimensions(graph, numberOfDestinations + 1)
         })
 
+        it('Removes an edge', () => {
+            const graph = new WeightedUndirectedGraph()
+            const source = 'A'
+            const destination = { destination: 'B', weight: 12 }
+
+            graph.addEdges(source, destination)
+            assertMatrixDimensions(graph, 2)
+            assert.deepStrictEqual(graph.adjacencyMatrix, [[0, destination.weight], [destination.weight, 0]])
+
+            graph.removeEdge(source, destination.destination)
+            assertMatrixDimensions(graph, 2)
+            assert.deepStrictEqual(graph.adjacencyMatrix, [[0,0], [0,0]])
+        })
+
+        it('throws when removing an edge with source or destination that don\'t exist', () => {
+            const graph = new WeightedUndirectedGraph()
+            assert.throws(() => graph.removeEdge('A', 'B'), /Can't remove edge, because .* doesn't exist/)
+        })
+
     })
 })
