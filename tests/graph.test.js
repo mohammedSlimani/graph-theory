@@ -82,6 +82,24 @@ describe('Graph tests', () => {
             assertMatrixDimensions(graph, 3)
         })
 
+        it('throws when given an invalid matrix', () => {
+            const matrix = [[0], [0]]
+            assert.throws(() => new WeightedUndirectedGraph(matrix), /Invalid adjacency matrix/)
+        })
+
+        it('Checks for valid adjacency Matrices', () => {
+            let matrix = []
+            assert.strictEqual(WeightedUndirectedGraph.matrixValid(matrix), true)
+            matrix = [['a', 'b'], ['a', 'b']]
+            assert.strictEqual(WeightedUndirectedGraph.matrixValid(matrix), false)
+            matrix = [[1], [1, 0]]
+            assert.strictEqual(WeightedUndirectedGraph.matrixValid(matrix), false)
+            matrix = [[0, 1], [1, 1]] // no zeros in the diagonal
+            assert.strictEqual(WeightedUndirectedGraph.matrixValid(matrix), false)
+            matrix = [0, [0, 1]]
+            assert.strictEqual(WeightedUndirectedGraph.matrixValid(matrix), false)
+        })
+
         it('Adds a vertex to the graph, Adding the same vertex again will throw an error', () => {
             const graph = new WeightedUndirectedGraph()
             graph.addVertex('A')

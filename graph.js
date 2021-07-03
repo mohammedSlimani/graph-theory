@@ -80,7 +80,7 @@ exports.WeightedUndirectedGraph = class WeightedUndirectedGraph {
    */
   constructor(initMatrix) {
     if (initMatrix && !WeightedUndirectedGraph.matrixValid(initMatrix))
-      throw new Error('Init matrix is not valid')
+      throw new Error('Invalid adjacency matrix')
 
     this._adjacencyMatrix = initMatrix || []
     this._vertexHash = initMatrix ? WeightedUndirectedGraph.makeDefaultVertexHash(initMatrix.length) : {}
