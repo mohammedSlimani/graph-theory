@@ -1,5 +1,5 @@
 const assert = require('assert')
-const { UndirectedGraph } = require('../graph')
+const { UndirectedGraph, WeightedUndirectedGraph } = require('../graph')
 
 describe('Graph tests', () => {
     describe('UndirectedGraph', () => {
@@ -53,5 +53,55 @@ describe('Graph tests', () => {
             Graph.removeVertex(source)
             assert.deepStrictEqual(Graph.adjacencyList, { [destination]: [] })
         })
+    })
+
+    describe('WeightedUndirectedGraph', () => {
+        /**
+         * Helper function to assert the dimensions of a matrix
+         * @param graph - Weighted Undirected Graph to be tested
+         * @param dimension - the expected dimensions
+         */
+        const assertMatrixDimensions = (graph, dimension) => {
+            assert(Array.isArray(graph.adjacencyMatrix))
+            assert.strictEqual(graph.adjacencyMatrix.length, dimension)
+            for (const row of graph.adjacencyMatrix) {
+                assert(Array.isArray(row))
+                assert.strictEqual(row.length, dimension)
+            }
+        }
+
+        it('Initializes the graph with an empty matrix', () => {
+            const graph = new WeightedUndirectedGraph()
+            assert.deepStrictEqual(graph.adjacencyMatrix, [])
+            assertMatrixDimensions(graph, 0)
+        })
+
+        it('Adds a vertex to the graph, Adding the same vertex again will throw an error', () => {
+            const graph = new WeightedUndirectedGraph()
+            graph.addVertex('A')
+            assertMatrixDimensions(graph, 1)
+            assert.throws(() => graph.addVertex('A'), /Vertex name already exist/)
+        })
+
+        it('Adds edges to one destination', () => {
+            const graph = new WeightedUndirectedGraph()
+            const destination = { destination: 'B', weight: 1 }
+            graph.addEdges('A', destination)
+            assertMatrixDimensions(graph, 2)
+            assert.deepStrictEqual(graph.adjacencyMatrix, [[0, destination.weight], [destination.weight, 0]])
+        })
+
+        it('Can add multiple destinations', () => {
+            const graph = new WeightedUndirectedGraph()
+            const source = 'source'
+            const numberOfDestinations = 10
+            const destinations = []
+            for (let i = 0; i < numberOfDestinations; i++) {
+                destinations.push({ destination: i, weight: i })
+            }
+            graph.addEdges(source, destinations)
+            assertMatrixDimensions(graph, numberOfDestinations + 1)
+        })
+
     })
 })

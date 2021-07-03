@@ -65,7 +65,70 @@ exports.UndirectedGraph = class UndirectedGraph {
     // Remove the vertex
     delete this._adjacencyList[vertex]
   }
-
 }
 
+/**
+ * The Weighted Undirected Graph here is a graph represented with the adjacency Matrix.
+ * @type {WeightedUndirectedGraph}
+ */
+exports.WeightedUndirectedGraph = class WeightedUndirectedGraph {
+  /**
+   * adjacencyMatrix
+   * vertexHash: is a hashmap between the naming given to the vertex and the index of this vertex in the matrix
+   */
+  constructor() {
+    this._adjacencyMatrix = []
+    this._vertexHash = {}
+  }
 
+  get adjacencyMatrix () {
+    return this._adjacencyMatrix;
+  }
+
+  /**
+   * Add a vertex with a custom name
+   * @param { string }vertex - the name given to the vertex
+   */
+  addVertex (vertex) {
+    // keeping the vertexHash naming unique to avoid problems
+    if (!isNaN(this._vertexHash[vertex])) throw new Error('Vertex name already exist')
+
+    for (let i = 0; i < this._adjacencyMatrix.length; i++) {
+      this._adjacencyMatrix[i].push(0) // the new vertex is not connected to any other vertex
+    }
+    // after adding a vertex, the size of the matrix increases by 1 in both rows and column
+    const newMatrixLength = this._adjacencyMatrix.length + 1
+    const newVertex = new Array(newMatrixLength).fill(0)
+    this._adjacencyMatrix.push(newVertex)
+
+    // Mapping the index of the newly created row and column to the name given to the vertex
+    this._vertexHash[vertex] = newMatrixLength - 1
+  }
+
+  /**
+   * @typedef Edge
+   * @property {string} destination - The destination to where the edge should go
+   * @property {number} weight - the cost of going to that destination
+   */
+
+  /**
+   *
+   * @param {string}source
+   * @param {(Edge | [Edge])}destinations
+   * @param {boolean} directed - the flash to decide whether the graph is direct or not
+   */
+  addEdges(source, destinations, directed = false) {
+    destinations = Array.isArray(destinations)? destinations : [destinations]
+    for (const vertex of [...destinations, {destination: source, weight: 0}]) {
+      if (!this._vertexHash[vertex.destination]) this.addVertex(vertex.destination)
+    }
+
+    for (const destination of destinations) {
+      this._adjacencyMatrix[this._vertexHash[source]][this._vertexHash[destination.destination]] = destination.weight
+      // make the matrix symmetric if the graph is undirected
+      if (!directed) {
+        this._adjacencyMatrix[this._vertexHash[destination.destination]][this._vertexHash[source]] = destination.weight
+      }
+    }
+  }
+}
