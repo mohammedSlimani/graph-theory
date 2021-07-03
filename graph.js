@@ -75,10 +75,51 @@ exports.WeightedUndirectedGraph = class WeightedUndirectedGraph {
   /**
    * adjacencyMatrix
    * vertexHash: is a hashmap between the naming given to the vertex and the index of this vertex in the matrix
+   *
+   * @param {[[number]]} [initMatrix] - a 2D matrix to initialize the graph with
    */
-  constructor() {
-    this._adjacencyMatrix = []
-    this._vertexHash = {}
+  constructor(initMatrix) {
+    if (initMatrix && !WeightedUndirectedGraph.matrixValid(initMatrix))
+      throw new Error('Init matrix is not valid')
+
+    this._adjacencyMatrix = initMatrix || []
+    this._vertexHash = initMatrix ? WeightedUndirectedGraph.makeDefaultVertexHash(initMatrix.length) : {}
+  }
+
+  /**
+   * Provide a default vertexHash when the initMatrix is given
+   * @param {number} length - the length of the given initMatrix
+   * @return {{}}
+   */
+  static makeDefaultVertexHash (length) {
+    const vertexHash = {}
+    for (let i = 0; i < length ; i++) {
+      vertexHash[i] = i
+    }
+    return vertexHash
+  }
+
+  /**
+   * Check if a given matrix is suitable to be an adjacency matrix
+   * @param matrix
+   * @return {boolean}
+   */
+  static matrixValid (matrix) {
+    if (!Array.isArray(matrix)) return false
+    const matrixLength = matrix.length
+    for (const row of matrix) {
+      if (!Array.isArray(row)) return false
+      if (row.length !== matrixLength) return false
+      if (row.some(n => isNaN(n))) return false
+    }
+
+    // checking if the diagonal is not zero, disputable
+    for (let i = 0; i < matrixLength; i++) {
+      // using cohesion of javascript to support number strings
+      if (matrix[i][i] != 0) return false
+    }
+
+    return true
   }
 
   get adjacencyMatrix () {

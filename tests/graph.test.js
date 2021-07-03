@@ -76,6 +76,12 @@ describe('Graph tests', () => {
             assertMatrixDimensions(graph, 0)
         })
 
+        it('initializes the matrix with the given matrix', () => {
+            const matrix = [[0,0,0],[0,0,0],[0,0,0]]
+            const graph = new WeightedUndirectedGraph(matrix)
+            assertMatrixDimensions(graph, 3)
+        })
+
         it('Adds a vertex to the graph, Adding the same vertex again will throw an error', () => {
             const graph = new WeightedUndirectedGraph()
             graph.addVertex('A')
