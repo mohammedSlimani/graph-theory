@@ -83,6 +83,15 @@ describe('Graph tests', () => {
             assert.throws(() => graph.addVertex('A'), /Vertex name already exist/)
         })
 
+        // I dont know if this is the right behavior
+        // This can be possible if the adjacency matrix represented the number of neighbours connected instead of the weight
+        // take this with a grain of salt dear reader <3
+        it('Can\'t add an edge to oneself', () => {
+            const graph = new WeightedUndirectedGraph()
+            const source = 'A'
+            assert.throws(() => graph.addEdges(source, { destination: source, weight: 1 }), /Vertex name already exist/)
+        })
+
         it('Adds edges to one destination', () => {
             const graph = new WeightedUndirectedGraph()
             const destination = { destination: 'B', weight: 1 }
